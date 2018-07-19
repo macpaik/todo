@@ -11,23 +11,20 @@
 |
 */
 
-/**
- * Show Task Dashboard
- **/
-Route::get('/', function () {
-  return view('tasks');
-});
+use App\Task;
+use Illuminate\Http\Request;
 
-/**
- * Add new Task
- **/
-Route::post('/task', function (Request $request) {
-  //
-});
+  /**
+   * Show Task Dashboard
+   **/
+  Route::get('/', function () {
+    return view('tasks', [
+        'tasks' => Task::orderBy('created_at', 'asc')->get()
+    ]);
+  });
 
-/**
- * Delete Task
- **/
-Route::get('/task/{task}', function (Task $task) {
-  //
-});
+  Route::post('task', function (Request $request) {
+    return view('tasks', [
+        'tasks' => Task::orderBy('created_at', 'asc')->get()
+    ]);
+  });
