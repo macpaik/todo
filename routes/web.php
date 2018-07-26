@@ -11,13 +11,15 @@
 |
 */
 
-use Illuminate\Http\Request;
 
-  Route::get('/', 'WelcomeController@welcome');
+    Route::get('/', function () {
+      return view('auth.login');
+    })->middleware('guest');
 
-  Route::get('/task', 'TaskController@index');
-  Route::post('/task', 'TaskController@store');
-  Route::delete('/task/{task}', 'TaskController@destroy');
+    Route::get('/tasks', 'TaskController@index');
+    Route::post('/task', 'TaskController@store');
+    Route::delete('/task/{task}', 'TaskController@destroy');
 
-  Route::get('auth/callback/{provider}', 'SocialAuthController@callback');
-  Route::get('auth/redirect/{provider}', 'SocialAuthController@redirect');
+    Route::get('/logout', 'Auth\LoginController@logout')->name('logout' );
+
+    Auth::routes();

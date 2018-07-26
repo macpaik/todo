@@ -2,55 +2,81 @@
 
 namespace App\Http\Controllers;
 
-use App\Task;
 use Illuminate\Http\Request;
 
-class taskController extends Controller
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+
+use App\Task;
+use App\Repositories\TaskRepository;
+
+class TaskController extends Controller
 {
-  /**
-   * Create a new controller instance.
-   *
-   * @return void
-   */
-  public function __construct() {
-      $this->middleware('guest');
-  }
+    /**
+     * The task repository instance.
+     *
+     * @var TaskRepository
+     */
+    protected $tasks;
 
-  public function index(Request $request) {
-      return view('tasks', [
-        'tasks' => Task::orderBy('created_at', 'asc')->get()
-      ]);
-  }
+    /**
+     * Create a new controller instance.
+     *
+     * @param  TaskRepository  $tasks
+     * @return void
+     */
+    public function __construct(TaskRepository $tasks)
+    {
+        $this->middleware('auth');
 
-  /**
-   * Create a new task.
-   *
-   * @param  Request  $request
-   * @return Response
-   */
-  public function store(Request $request) {
-      $this->validate($request, [
-          'name' => 'required|max:255',
-      ]);
+        $this->tasks = $tasks;
+    }
 
-      $task = new Task;
-      $task->name = $request->name;
-      $task->save();
+    /**
+     * Display a list of all of the user's task.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function index(Request $request)
+    {
+        return view('tasks.index', [
+            'tasks' => $this->tasks->forUser($request->user()),
+        ]);
+    }
 
-      return redirect('/');
-  }
+    /**
+     * Create a new task.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|max:255',
+        ]);
 
-  /**
-   * Destroy the given task.
-   *
-   * @param  Request  $request
-   * @param  Task  $task
-   * @return Response
-   */
-  public function destroy(Request $request, Task $task) {
-      $task->delete();
+        $request->user()->tasks()->create([
+            'name' => $request->name,
+        ]);
 
-      return redirect('/');
-  }
+        return redirect('/tasks');
+    }
 
+    /**
+     * Destroy the given task.
+     *
+     * @param  Request  $request
+     * @param  Task  $task
+     * @return Response
+     */
+    public function destroy(Request $request, Task $task)
+    {
+        $this->authorize('destroy', $task);
+
+        $task->delete();
+
+        return redirect('/tasks');
+    }
 }
