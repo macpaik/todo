@@ -21,5 +21,8 @@
     Route::delete('/task/{task}', 'TaskController@destroy');
 
     Route::get('logout', 'Auth\LoginController@logout')->name('logout' );
+    
+    //Re-Routing register(POST) for registering users
+    Route::post('registerUser', 'Auth\RegisterController@register');
 
     Auth::routes();
