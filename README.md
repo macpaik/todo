@@ -2,7 +2,7 @@
 
 Thank you for vising my github.
 
-You can try this application in [HERE](http://52.196.114.50/)
+You can try this application in [HERE](http://52.198.203.202/)
 
 ## Security Vulnerabilities
 If you discover a security vulnerability within this application, please send an e-mail to Yoonsuk Baek via [macxpaik@gmail.com](mailto:macxpaik@gmail.com)
